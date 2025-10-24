@@ -1,28 +1,83 @@
+[build-system]
+requires = [
+  "setuptools<81",
+  "wheel<1",
+]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "listmonk-exporter"
 version = "0.1.0"
-description = ""
+description = "A Prometheus exporter for Listmonk newsletter and mailing list manager"
 authors = [
-    {name = "Meysam",email = "contact@meysam.io"}
+    {name = "Meysam Azad", email = "contact@meysam.io"}
 ]
-license = {text = "Apache 2.0"}
+maintainers = [
+    {name = "Meysam Azad", email = "contact@meysam.io"}
+]
+license = {text = "Apache-2.0"}
 readme = "README.md"
-requires-python = ">=3.13,<4"
-dependencies = [
-  "httpx<4",
-  "prometheus-client<1",
-  "pydantic-settings<3",
-  "pydantic<3",
+requires-python = ">=3.11,<4.0"
+keywords = [
+    "listmonk",
+    "prometheus",
+    "exporter",
+    "monitoring",
+    "metrics",
+    "newsletter",
+    "email",
+    "mailing-list",
 ]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Networking :: Monitoring",
+    "Topic :: Communications :: Email",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "httpx>=0.27.0,<1",
+  "prometheus-client>=0.20.0,<1",
+  "pydantic-settings>=2.0.0,<3",
+  "pydantic>=2.0.0,<3",
+]
+
+[project.urls]
+Homepage = "https://github.com/meysam81/listmonk-exporter"
+Documentation = "https://github.com/meysam81/listmonk-exporter#readme"
+Repository = "https://github.com/meysam81/listmonk-exporter"
+Issues = "https://github.com/meysam81/listmonk-exporter/issues"
+Changelog = "https://github.com/meysam81/listmonk-exporter/releases"
 
 [project.scripts]
 listmonk-exporter = "main:main"
 
-[tool.poetry]
-packages = [
-    {include = "main.py"},
-]
+[project.optional-dependencies]
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["main.py"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP"]
+ignore = []

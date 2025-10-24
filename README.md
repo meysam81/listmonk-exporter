@@ -223,7 +223,7 @@ listmonk_subscribers_by_status{list_name="Newsletter",subscription_status="confi
 
 ### Prerequisites
 
-- Python 3.10 or higher
+- Python 3.11 or higher
 - pip
 
 ### Setup
