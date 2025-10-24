@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-please:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release-please.outputs.releases_created }}
+      tag_name: ${{ steps.release-please.outputs.tag_name }}
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - id: release-please
+        name: Release please
+        uses: googleapis/release-please-action@v4
+        with:
+          release-type: python
+
+  pypi-publish:
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    environment:
+      name: pypi
+    name: upload release to PyPI
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - name: Install build tools
+        run: python3 -m pip install --upgrade pip setuptools wheel build
+      - name: Build package
+        run: python3 -m build --wheel --sdist --no-isolation
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

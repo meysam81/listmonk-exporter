@@ -1,0 +1,28 @@
+[project]
+name = "listmonk-exporter"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Meysam",email = "contact@meysam.io"}
+]
+license = {text = "Apache 2.0"}
+readme = "README.md"
+requires-python = ">=3.13,<4"
+dependencies = [
+  "httpx<4",
+  "prometheus-client<1",
+  "pydantic-settings<3",
+  "pydantic<3",
+]
+
+[project.scripts]
+listmonk-exporter = "main:main"
+
+[tool.poetry]
+packages = [
+    {include = "main.py"},
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
