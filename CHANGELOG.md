@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/meysam81/listmonk-exporter/compare/v0.1.0...v0.1.1) (2025-10-24)
+
+
+### Bug Fixes
+
+* **CI:** complete the pyproject before publish ([4289dea](https://github.com/meysam81/listmonk-exporter/commit/4289dea6652bcafb5d44adbec0b33cfe89b5c6dd))
+
 ## 0.1.0 (2025-10-24)
 
 

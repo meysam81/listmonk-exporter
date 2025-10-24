@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "listmonk-exporter"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Prometheus exporter for Listmonk newsletter and mailing list manager"
 authors = [
     {name = "Meysam Azad", email = "contact@meysam.io"}
