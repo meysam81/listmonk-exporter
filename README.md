@@ -2,8 +2,18 @@
 
 [![CI](https://github.com/meysam81/listmonk-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/meysam81/listmonk-exporter/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/listmonk-exporter)](https://pypi.org/project/listmonk-exporter/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/listmonk-exporter)](https://pypi.org/project/listmonk-exporter/)
 [![Python Version](https://img.shields.io/pypi/pyversions/listmonk-exporter)](https://pypi.org/project/listmonk-exporter/)
 [![License](https://img.shields.io/github/license/meysam81/listmonk-exporter)](LICENSE)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![GitHub stars](https://img.shields.io/github/stars/meysam81/listmonk-exporter?style=social)](https://github.com/meysam81/listmonk-exporter/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/meysam81/listmonk-exporter?style=social)](https://github.com/meysam81/listmonk-exporter/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/meysam81/listmonk-exporter)](https://github.com/meysam81/listmonk-exporter/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/meysam81/listmonk-exporter)](https://github.com/meysam81/listmonk-exporter/pulls)
+[![GitHub last commit](https://img.shields.io/github/last-commit/meysam81/listmonk-exporter)](https://github.com/meysam81/listmonk-exporter/commits/main)
+[![GitHub contributors](https://img.shields.io/github/contributors/meysam81/listmonk-exporter)](https://github.com/meysam81/listmonk-exporter/graphs/contributors)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/meysam81/listmonk-exporter/graphs/commit-activity)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 A Prometheus exporter for [Listmonk](https://listmonk.app/), the self-hosted newsletter and mailing list manager. Monitor your email campaigns, subscriber counts, bounce rates, and more with this lightweight exporter.
 
