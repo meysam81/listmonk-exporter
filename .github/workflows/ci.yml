@@ -6,6 +6,20 @@ on:
       - main
 
 jobs:
+  build-main:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Docker
+        uses: meysam81/build-docker@main
+        with:
+          cosign: true
+          image-extra-tags: |
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ github.run_id }}
+            ghcr.io/${{ github.repository }}:latest
+          image-name: ghcr.io/${{ github.repository }}
+
   release-please:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -45,3 +59,17 @@ jobs:
         run: python3 -m build --wheel --sdist --no-isolation
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  build-prod:
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Docker
+        uses: meysam81/build-docker@main
+        with:
+          cosign: true
+          image-extra-tags: |
+            ghcr.io/${{ github.repository }}:${{ needs.release-please.outputs.tag_name }}
+          image-name: ghcr.io/${{ github.repository }}
+          ref: ${{ needs.release-please.outputs.tag_name }}
