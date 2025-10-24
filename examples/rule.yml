@@ -1,0 +1,168 @@
+groups:
+  - name: listmonk_alerts
+    interval: 60s
+    rules:
+      - alert: ListmonkSubscriberDropHigh
+        expr: |
+          (
+            rate(listmonk_subscribers_by_status{subscription_status="unsubscribed"}[1h]) > 0
+            and
+            rate(listmonk_subscribers_by_status{subscription_status="unsubscribed"}[1h])
+            /
+            listmonk_subscribers_total > 0.05
+          )
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High unsubscribe rate detected for list {{ $labels.list_name }}"
+          description: "List {{ $labels.list_name }} has experienced a high unsubscribe rate (>5%) in the last hour. Current rate: {{ $value | humanizePercentage }}"
+
+      - alert: ListmonkSubscriberDropCritical
+        expr: |
+          (
+            rate(listmonk_subscribers_by_status{subscription_status="unsubscribed"}[1h]) > 0
+            and
+            rate(listmonk_subscribers_by_status{subscription_status="unsubscribed"}[1h])
+            /
+            listmonk_subscribers_total > 0.10
+          )
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical unsubscribe rate detected for list {{ $labels.list_name }}"
+          description: "List {{ $labels.list_name }} has experienced a critical unsubscribe rate (>10%) in the last hour. Current rate: {{ $value | humanizePercentage }}"
+
+      - alert: ListmonkCampaignBounceRateHigh
+        expr: |
+          (
+            listmonk_campaign_stats{stat_type="bounced"}
+            /
+            listmonk_campaign_stats{stat_type="sent"} > 0.05
+          )
+          and
+          listmonk_campaign_stats{stat_type="sent"} > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High bounce rate for campaign {{ $labels.campaign_name }}"
+          description: "Campaign {{ $labels.campaign_name }} (ID: {{ $labels.campaign_id }}) has a bounce rate above 5%. Current rate: {{ $value | humanizePercentage }}"
+
+      - alert: ListmonkCampaignBounceRateCritical
+        expr: |
+          (
+            listmonk_campaign_stats{stat_type="bounced"}
+            /
+            listmonk_campaign_stats{stat_type="sent"} > 0.10
+          )
+          and
+          listmonk_campaign_stats{stat_type="sent"} > 100
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical bounce rate for campaign {{ $labels.campaign_name }}"
+          description: "Campaign {{ $labels.campaign_name }} (ID: {{ $labels.campaign_id }}) has a bounce rate above 10%. This may affect sender reputation. Current rate: {{ $value | humanizePercentage }}"
+
+      - alert: ListmonkCampaignLowOpenRate
+        expr: |
+          (
+            listmonk_campaign_stats{stat_type="opened"}
+            /
+            listmonk_campaign_stats{stat_type="sent"} < 0.10
+          )
+          and
+          listmonk_campaign_stats{stat_type="sent"} > 100
+          and
+          listmonk_campaign_stats{campaign_status="finished"}
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low open rate for campaign {{ $labels.campaign_name }}"
+          description: "Campaign {{ $labels.campaign_name }} (ID: {{ $labels.campaign_id }}) has an open rate below 10%. Current rate: {{ $value | humanizePercentage }}"
+
+      - alert: ListmonkHardBouncesIncreasing
+        expr: |
+          rate(listmonk_bounces_total{bounce_type="hard"}[1h]) > 10
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hard bounces increasing significantly"
+          description: "Hard bounce rate has increased to {{ $value | humanize }} per second over the last hour. This may indicate list quality issues."
+
+      - alert: ListmonkComplaintRateHigh
+        expr: |
+          rate(listmonk_bounces_total{bounce_type="complaint"}[1h]) > 1
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High complaint rate detected"
+          description: "Complaint rate is {{ $value | humanize }} per second. This can severely impact sender reputation and may lead to blacklisting."
+
+      - alert: ListmonkExporterScrapeFailing
+        expr: listmonk_scrape_success == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Listmonk exporter scrape failing for {{ $labels.operation }}"
+          description: "The exporter has failed to scrape {{ $labels.operation }} data for 5 minutes. Check exporter logs and Listmonk API availability."
+
+      - alert: ListmonkExporterHighErrorRate
+        expr: rate(listmonk_scrape_errors_total[5m]) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate in Listmonk exporter for {{ $labels.operation }}"
+          description: "The exporter is experiencing errors at {{ $value | humanize }} per second for {{ $labels.operation }}. Current error count increasing."
+
+      - alert: ListmonkExporterDown
+        expr: up{job="listmonk"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Listmonk exporter is down"
+          description: "The Listmonk exporter at {{ $labels.instance }} has been down for more than 2 minutes."
+
+      - alert: ListmonkExporterSlowScrape
+        expr: |
+          histogram_quantile(0.95,
+            rate(listmonk_scrape_duration_seconds_bucket[5m])
+          ) > 10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Listmonk exporter scraping slowly for {{ $labels.operation }}"
+          description: "95th percentile scrape duration for {{ $labels.operation }} is {{ $value | humanizeDuration }}. This may indicate API performance issues."
+
+      - alert: ListmonkSubscriberCountDrop
+        expr: |
+          (
+            listmonk_subscribers_total
+            -
+            listmonk_subscribers_total offset 1h
+          ) / listmonk_subscribers_total offset 1h < -0.10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Significant subscriber count drop for {{ $labels.list_name }}"
+          description: "List {{ $labels.list_name }} has lost more than 10% of subscribers in the last hour. Current change: {{ $value | humanizePercentage }}"
+
+      - alert: ListmonkNoRecentCampaigns
+        expr: |
+          (time() - max(listmonk_campaign_stats{campaign_status="finished"}) by (list_name)) > 604800
+        for: 1h
+        labels:
+          severity: info
+        annotations:
+          summary: "No campaigns sent in the last 7 days"
+          description: "No campaigns have been marked as finished in the last 7 days. This may be intentional, but could indicate an issue with campaign scheduling."

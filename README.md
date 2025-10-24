@@ -200,6 +200,8 @@ scrape_configs:
       - targets: ["localhost:8000"]
 ```
 
+> **Note:** For complete configuration examples including scrape jobs and alerting rules, see the [examples directory](examples/).
+
 ## Grafana Dashboard
 
 Import the provided Grafana dashboard (coming soon) or create your own using the exported metrics.
